@@ -13,7 +13,6 @@ This project is a computer vision game created using MediaPipe.js for hand gestu
 
 ## 🛠️ Technologies Used
 
-### Objectives:
 -  Next.js: React-based framework for building web applications
 -  MediaPipe.js: Library for real-time gesture detection using webcam
 -  Tone.js: Library for handling sound effects in the game
@@ -28,4 +27,4 @@ In Space Dash, you control a rocket that must avoid boulders falling from the to
 -  Collide with a boulder, and you’ll lose a life—avoid losing all your lives to keep playing!
 
 ## Deployment
-- 
+- [Space Dash](https://space--dash.vercel.app/)
