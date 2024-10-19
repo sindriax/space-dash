@@ -15,6 +15,7 @@ let distanceInterval: any;
 
 let isInvincible = false;
 let livesRemaining: number;
+
 export default function Home() {
   const [rocketLeft, setRocketLeft] = useState(0);
   const [isDetected, setIsDetected] = useState(false);
@@ -26,12 +27,13 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [isColliding, setIsColliding] = useState(false);
   const [distance, setDistance] = useState(0);
-
   const [livesRemainingState, setLivesRemainingState] = useState(0);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [isFirstTime, setIsFirstTime] = useState(true);
 
   const rocketRef = useRef(null);
   const [rocket, setRocket] = useState<any>();
+
   useEffect(() => {
     setRocketLeft(window.innerWidth / 2);
     livesRemaining = 4;
@@ -72,9 +74,7 @@ export default function Home() {
       removalInterval = setInterval(() => {
         const now = Date.now();
         setBoulders((prevArr) => {
-          return prevArr.filter((b, idx) => {
-            return now - b.timestamp < 5000;
-          });
+          return prevArr.filter((b) => now - b.timestamp < 5000);
         });
       }, 5000);
     }
@@ -89,7 +89,11 @@ export default function Home() {
     setIsLoading(result.isLoading);
     setIsDetected(result.isDetected);
     setDegrees(result.degrees);
-    // set rocketLeft
+
+    // If hands are detected for the first time, hide instructions
+    if (result.isDetected && isFirstTime) {
+      setIsFirstTime(false);
+    }
 
     if (result.degrees && result.degrees !== 0) {
       setDetectCollisionTrigger(Math.random());
@@ -108,7 +112,6 @@ export default function Home() {
   };
 
   const collisionHandler = () => {
-    // after collision
     if (!isInvincible && !isGameOver) {
       console.log("COLLISION");
       isInvincible = true;
@@ -117,7 +120,6 @@ export default function Home() {
       livesRemaining--;
       setLivesRemainingState(livesRemaining);
       if (livesRemaining <= 0) {
-        // then game over
         setIsGameOver(true);
       }
       setTimeout(() => {
@@ -159,17 +161,15 @@ export default function Home() {
         <RocketComponent degrees={degrees} />
       </div>
       <div className="absolute z-10 h-screen w-screen overflow-hidden">
-        {boulders.map((b, idx) => {
-          return (
-            <BoulderComponent
-              key={b.key}
-              isMoving={isDetected}
-              what={rocket}
-              soWhat={collisionHandler}
-              when={detectCollisionTrigger}
-            />
-          );
-        })}
+        {boulders.map((b) => (
+          <BoulderComponent
+            key={b.key}
+            isMoving={isDetected}
+            what={rocket}
+            soWhat={collisionHandler}
+            when={detectCollisionTrigger}
+          />
+        ))}
       </div>
       <GameInfoOverlay
         info={{
@@ -179,6 +179,7 @@ export default function Home() {
           distance,
           livesRemainingState,
           isGameOver,
+          isFirstTime,
         }}
       />
     </main>

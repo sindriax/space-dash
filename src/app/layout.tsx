@@ -7,8 +7,8 @@ const inter = Inter({ subsets: ["latin"] });
 const robotoMono = Roboto_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Meteor Dash",
-  description: "Play with gestures",
+  title: "Space Dash",
+  description: "Hand movements controlled computer vision game.",
 };
 
 export default function RootLayout({
