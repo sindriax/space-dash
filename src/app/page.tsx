@@ -5,8 +5,8 @@ import BoulderComponent from "@/components/BoulderComponent";
 import GameInfoOverlay from "@/components/GameInfoOverlay";
 import HandRecognizer from "@/components/HandRecognizer";
 import RocketComponent from "@/components/RocketComponent";
+import LevelManager from "@/components/LevelManager";
 import { playBackground, playFX } from "@/utils/audiohandler";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 let generationInterval: any;
@@ -21,8 +21,7 @@ export default function Home() {
   const [isDetected, setIsDetected] = useState(false);
   const [degrees, setDegrees] = useState(0);
   const [boulders, setBoulders] = useState<any[]>([]);
-  const [detectCollisionTrigger, setDetectCollisionTrigger] =
-    useState<number>(0);
+  const [detectCollisionTrigger, setDetectCollisionTrigger] = useState<number>(0);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isColliding, setIsColliding] = useState(false);
@@ -30,6 +29,7 @@ export default function Home() {
   const [livesRemainingState, setLivesRemainingState] = useState(0);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isFirstTime, setIsFirstTime] = useState(true);
+  const [speed, setSpeed] = useState(1000);
 
   const rocketRef = useRef(null);
   const [rocket, setRocket] = useState<any>();
@@ -69,7 +69,7 @@ export default function Home() {
           }
           return retArr;
         });
-      }, 1000);
+      }, speed);
 
       removalInterval = setInterval(() => {
         const now = Date.now();
@@ -83,14 +83,13 @@ export default function Home() {
       clearInterval(generationInterval);
       clearInterval(removalInterval);
     };
-  }, [isDetected, isGameOver]);
+  }, [isDetected, isGameOver, speed]);
 
   const setHandResults = (result: any) => {
     setIsLoading(result.isLoading);
     setIsDetected(result.isDetected);
     setDegrees(result.degrees);
 
-    // If hands are detected for the first time, hide instructions
     if (result.isDetected && isFirstTime) {
       setIsFirstTime(false);
     }
@@ -127,6 +126,10 @@ export default function Home() {
         setIsColliding(isInvincible);
       }, 1500);
     }
+  };
+
+  const handleLevelChange = (newLevel: number, newSpeed: number) => {
+    setSpeed(newSpeed);
   };
 
   useEffect(() => {
@@ -182,6 +185,7 @@ export default function Home() {
           isFirstTime,
         }}
       />
+      <LevelManager distance={distance} onLevelChange={handleLevelChange} />
     </main>
   );
 }
